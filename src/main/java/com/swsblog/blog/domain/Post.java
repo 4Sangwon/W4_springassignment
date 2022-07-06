@@ -1,8 +1,8 @@
-package com.swsblog.blog.post.domain;
+package com.swsblog.blog.domain;
 
-import com.swsblog.blog.post.Timestamped;
-import com.swsblog.blog.post.dto.PostRequestDto;
-import com.swsblog.blog.post.dto.PostUpdateRequestDto;
+import com.swsblog.blog.domain.Timestamped;
+import com.swsblog.blog.dto.PostRequestDto;
+import com.swsblog.blog.dto.PostUpdateRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

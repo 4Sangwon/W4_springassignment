@@ -1,4 +1,4 @@
-package com.swsblog.blog.post.dto;
+package com.swsblog.blog.dto;
 
 import lombok.Getter;
 

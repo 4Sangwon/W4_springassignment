@@ -1,6 +1,6 @@
-package com.swsblog.blog.post;
+package com.swsblog.blog.repository;
 
-import com.swsblog.blog.post.domain.Post;
+import com.swsblog.blog.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

@@ -1,9 +1,11 @@
-package com.swsblog.blog.post;
+package com.swsblog.blog.controller;
 
-import com.swsblog.blog.post.domain.Post;
-import com.swsblog.blog.post.dto.PostDeleteRequestDto;
-import com.swsblog.blog.post.dto.PostRequestDto;
-import com.swsblog.blog.post.dto.PostUpdateRequestDto;
+import com.swsblog.blog.domain.Post;
+import com.swsblog.blog.dto.PostDeleteRequestDto;
+import com.swsblog.blog.dto.PostRequestDto;
+import com.swsblog.blog.dto.PostUpdateRequestDto;
+import com.swsblog.blog.repository.PostRepository;
+import com.swsblog.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

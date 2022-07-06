@@ -1,9 +1,10 @@
-package com.swsblog.blog.post;
+package com.swsblog.blog.service;
 
 
-import com.swsblog.blog.post.domain.Post;
-import com.swsblog.blog.post.dto.PostDeleteRequestDto;
-import com.swsblog.blog.post.dto.PostUpdateRequestDto;
+import com.swsblog.blog.domain.Post;
+import com.swsblog.blog.dto.PostDeleteRequestDto;
+import com.swsblog.blog.dto.PostUpdateRequestDto;
+import com.swsblog.blog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
