@@ -1,6 +1,6 @@
 package com.swsblog.blog.post;
 
-import org.springframework.data.annotation.LastModifiedDate;
+import com.swsblog.blog.post.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
