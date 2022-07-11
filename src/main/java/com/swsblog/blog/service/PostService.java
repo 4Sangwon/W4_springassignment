@@ -1,4 +1,4 @@
-package com.swsblog.blog.controller.service;
+package com.swsblog.blog.service;
 
 
 import com.swsblog.blog.domain.Post;
