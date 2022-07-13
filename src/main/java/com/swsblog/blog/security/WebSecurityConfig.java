@@ -31,8 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public WebSecurityConfig(
             JWTAuthProvider jwtAuthProvider,
-            HeaderTokenExtractor headerTokenExtractor
-    ) {
+            HeaderTokenExtractor headerTokenExtractor) {
         this.jwtAuthProvider = jwtAuthProvider;
         this.headerTokenExtractor = headerTokenExtractor;
     }
@@ -80,15 +79,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .permitAll()
                 .and()
-                // [로그아웃 기능]
-                .logout()
-                // 로그아웃 요청 처리 URL
-                .logoutUrl("/user/logout")
-                .permitAll()
+                    // [로그아웃 기능]
+                    .logout()
+                    // 로그아웃 요청 처리 URL
+                    .logoutUrl("/user/logout")
+                    .permitAll()
                 .and()
-                .exceptionHandling()
-                // "접근 불가" 페이지 URL 설정
-                .accessDeniedPage("/forbidden.html");
+                    .exceptionHandling()
+                    // "접근 불가" 페이지 URL 설정
+                    .accessDeniedPage("/forbidden.html");
+
     }
 
     @Bean
@@ -96,6 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager());
         formLoginFilter.setFilterProcessesUrl("/user/login");
         formLoginFilter.setAuthenticationSuccessHandler(formLoginSuccessHandler());
+        formLoginFilter.setAuthenticationFailureHandler(formLoginFailureHandler());
         formLoginFilter.afterPropertiesSet();
         return formLoginFilter;
     }
@@ -104,6 +105,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public FormLoginSuccessHandler formLoginSuccessHandler() {
         return new FormLoginSuccessHandler();
     }
+
+    @Bean
+    public FormLoginFailureHandler formLoginFailureHandler() { return new FormLoginFailureHandler(); }
 
     @Bean
     public FormLoginAuthProvider formLoginAuthProvider() {

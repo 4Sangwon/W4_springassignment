@@ -1,30 +1,25 @@
 package com.swsblog.blog.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.swsblog.blog.domain.UserRoleEnum;
 import com.swsblog.blog.dto.SignupRequestDto;
 import com.swsblog.blog.dto.UserInfoDto;
 import com.swsblog.blog.security.UserDetailsImpl;
-import com.swsblog.blog.service.KakaoUserService;
 import com.swsblog.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 public class UserController {
 
     private final UserService userService;
-    private final KakaoUserService kakaoUserService;
 
     @Autowired
-    public UserController(UserService userService, KakaoUserService kakaoUserService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.kakaoUserService = kakaoUserService;
     }
 
     // 회원 로그인 페이지
@@ -41,11 +36,11 @@ public class UserController {
 
     // 회원 가입 요청 처리
     @PostMapping("/user/signup")
-    public String registerUser(SignupRequestDto requestDto) {
+    public String registerUser(@RequestBody @Valid SignupRequestDto requestDto) {
         userService.registerUser(requestDto);
         return "redirect:/user/loginView";
     }
-
+//    @RequestBody @Valid
     // 회원 관련 정보 받기
     @PostMapping("/user/userinfo")
     @ResponseBody
@@ -57,9 +52,4 @@ public class UserController {
         return new UserInfoDto(username, isAdmin);
     }
 
-    @GetMapping("/user/kakao/callback")
-    public String kakaoLogin(@RequestParam String code) throws JsonProcessingException {
-        kakaoUserService.kakaoLogin(code);
-        return "redirect:/";
-    }
 }

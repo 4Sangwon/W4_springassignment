@@ -252,6 +252,10 @@
         .hidden {
             display: none;
         }
+
+        #logout-text {
+            color: black;
+        }
     </style>
 
 </head>
@@ -264,16 +268,17 @@
 
 </div>
 <div class="wrap">
+    <nav>
+        <form id="my_form" method="post" style="text-align: right" action="/user/logout">
+            <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
+        </form>
+    </nav>
     <div class="header">
         <h2>Sangwon's Blog</h2>
         <p>
             공유하고 싶은 소식을 입력해주세요.
             24시간이 지난 뒤에는 사라집니다.
         </p>
-
-        <form id="my_form" method="post" action="/user/logout">
-            <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
-        </form>
     </div>
 
     <div class="nav">

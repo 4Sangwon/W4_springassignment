@@ -30,9 +30,16 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
         }
 
+        if(requestDto.getPassword().contains(requestDto.getUsername())){
+            throw new IllegalArgumentException("닉네임은 비밀번호에 포함될 수 없습니다.");
+        }
+
+        //비밀번호 체크
+        if(!requestDto.getPassword().equals(requestDto.getPasswordChk())) {
+            throw new IllegalArgumentException("비밀번호를 다시 확인해주세요.");
+        }
         // 패스워드 암호화
         String password = passwordEncoder.encode(requestDto.getPassword());
-        String email = requestDto.getEmail();
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
@@ -43,7 +50,7 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(username, password, email, role);
+        User user = new User(username, password, role);
         userRepository.save(user);
         return user;
     }

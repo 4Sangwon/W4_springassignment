@@ -41,7 +41,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.14.0'
     compileOnly 'com.auth0:java-jwt:3.13.0'
-    //notblank
+    //notblank 등등 유효성 검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
