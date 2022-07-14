@@ -83,6 +83,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     // 로그아웃 요청 처리 URL
                     .logoutUrl("/user/logout")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("token")
                     .permitAll()
                 .and()
                     .exceptionHandling()

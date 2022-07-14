@@ -2,13 +2,16 @@ let targetId;
 
 $(document).ready(function () {
     if ($.cookie('token')) {
+        $('#logout-text').show();
+        $('#login-text').hide();
         $.ajaxSetup({
-            headers:{
+            headers: {
                 'Authorization': $.cookie('token')
             }
         })
     } else {
-        window.location.href = '/user/loginView';
+        $('#login-text').show();
+        $('#logout-text').hide();
     }
 
     $.ajax({
@@ -18,14 +21,13 @@ $(document).ready(function () {
         success: function (response) {
             const username = response.username;
             const isAdmin = !!response.admin;
-            console.log(response)
             if (!username) {
                 window.location.href = '/user/loginView';
             }
 
             $('#username1').text(username);
         },
-        error: function() {
+        error: function () {
             window.location.href = '/user/loginView';
         }
     })
@@ -70,15 +72,15 @@ $(document).ready(function () {
     $('#area-write').hide();
 })
 
+function login(){
+    window.location.href = '/user/loginView';
+}
+
 // 미리 작성된 영역 - 수정하지 않으셔도 됩니다.
 // 사용자가 내용을 올바르게 입력하였는지 확인합니다.
-function isValidContents(title, username, password, contents) {
+function isValidContents(title, password, contents) {
     if (title === '') {
         alert('제목을 입력해주세요');
-        return false;
-    }
-    if (username === '') {
-        alert('닉네임을 입력해주세요');
         return false;
     }
     if (password === '') {
@@ -134,31 +136,33 @@ function hideEdits(id) {
     $(`#${id}-edit`).show();
 }
 
-// 메모를 불러와서 보여줍니다.
+// 게시글을 불러와서 보여줍니다.
 function getMessages() {
-    // 1. 기존 메모 내용을 지웁니다.
+    // 1. 기존 게시글 내용을 지웁니다.
     $('#cards-box').empty();
-    // 2. 메모 목록을 불러와서 HTML로 붙입니다.
+    // 2. 게시글 목록을 불러와서 HTML로 붙입니다.
     $.ajax({
         type: 'GET',
         url: '/api/posts',
         success: function (response) {
             for (let i = 0; i < response.length; i++) {
                 let message = response[i];
-                let id = message['id']; //message.id 가능?
+                let id = message['id'];
                 let title = message['title'];
                 let username = message['username'];
                 let contents = message['contents'];
                 let modifiedAt = message['modifiedAt'];
                 addHTML(id, title, username, contents, modifiedAt);
                 addPost(id, title, username, contents, modifiedAt);
+                getComment(id);
             }
         }
     })
 }
-function addPost(id, title, username, contents, modifiedAt){
-    let date = modifiedAt.toString().substring(0,10);
-    let time = modifiedAt.toString().substring(11,19);
+
+function addPost(id, title, username, contents, modifiedAt) {
+    let date = modifiedAt.toString().substring(0, 10);
+    let time = modifiedAt.toString().substring(11, 19);
     let modified = date + " " + time;
     let tempHtml = `<div class="card">
                             <!-- date/username 영역 -->
@@ -188,16 +192,27 @@ function addPost(id, title, username, contents, modifiedAt){
                                 <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
                                 <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
                             </div>
+                            <div id="comments-box"></div>
+                            <div class="field has-addons">
+                              <div class="control">
+                                <input class="input" type="text" id="${id}-comment" style="width: 440px" placeholder="댓글을 입력해주세요">
+                              </div>
+                              <div class="control">
+                                <a class="button is-info" onclick="writeComment(${id})">
+                                  댓글 작성
+                                </a>
+                              </div>
+                            </div>
                         </div>`;
     $('#posts-box').append(tempHtml);
 }
+
 // 메모 하나를 HTML로 만들어서 body 태그 내 원하는 곳에 붙입니다.
 function addHTML(id, title, username, contents, modifiedAt) {
     // 1. HTML 태그를 만듭니다.
-    let date = modifiedAt.toString().substring(0,10);
-    let time = modifiedAt.toString().substring(11,19);
+    let date = modifiedAt.toString().substring(0, 10);
+    let time = modifiedAt.toString().substring(11, 19);
     let modified = date + " " + time;
-    console.log(modified);
     let tempHtml = `<tr class="card">
                                 <td>${title}</td>
                                 <td>${modified}</td>
@@ -211,15 +226,14 @@ function addHTML(id, title, username, contents, modifiedAt) {
 function writePost() {
     // 1. 작성한 메모를 불러옵니다.
     let title = $('#title').val();
-    let username = $('#username').val();
     let password = $('#password').val();
     let contents = $('#contents').val();
     // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
-    if (isValidContents(title, username, password, contents) === false) {
+    if (isValidContents(title, password, contents) === false) {
         return;
     }
     // 3. 전달할 data JSON으로 만듭니다.
-    let data = {'title': title, 'username': username, 'password': password, 'contents': contents};
+    let data = {'title': title, 'password': password, 'contents': contents};
     // 4. POST /api/memos 에 data를 전달합니다.
     $.ajax({
         type: "POST",
@@ -251,7 +265,7 @@ function submitEdit(id) {
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
-            if(response === true) {
+            if (response === true) {
                 alert('메시지 변경에 성공하였습니다.');
                 window.location.reload();
             } else alert('비밀번호를 확인해주세요')
@@ -259,17 +273,6 @@ function submitEdit(id) {
     });
 }
 
-// function showModal(id) {
-//     $('#selectpost').append(tempHTML);
-//     const modal = document.querySelector(".modal");
-//     modal.classList.remove('hidden');
-// }
-// function closeModal() {
-//     const modal = document.querySelector(".modal");
-//     modal.classList.add('hidden')
-// }
-
-// 게시글을 삭제합니다.
 function deleteOne(id) {
     let password = prompt('비밀번호를 입력하세요');
     let data = {'password': password}
@@ -279,10 +282,113 @@ function deleteOne(id) {
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
-            if(response === true){
+            if (response === true) {
                 alert('메시지 삭제에 성공하였습니다.');
                 window.location.reload();
             } else alert('비밀번호를 확인해주세요')
+        }
+    })
+}
+
+function writeComment(postId) {
+    let contents = $(`#${postId}-comment`).val();
+    let data = {'contents': contents};
+    if(contents === "") {
+        alert("내용을 작성해주세요");
+        return;
+    }
+    $.ajax({
+        type: "POST",
+        url: `/api/comments/${postId}`,
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+            alert('댓글 작성에 성공하였습니다.');
+            window.location.reload();
+        }
+    })
+}
+
+function getComment(postId) {
+    $.ajax({
+        type: "GET",
+        url: `/api/comments/${postId}`,
+        success: function (response) {
+            for (let i = 0; i < response.length; i++) {
+                let comment = response[i];
+                let id = comment['id'];
+                let username = comment['username'];
+                let contents = comment['contents'];
+                addComment(postId, username, id, contents)
+            }
+        }
+    })
+}
+
+function addComment(postId, username, id, contents) {
+    let tempHtml = `<div class="card">
+                           <!-- contents 조회/수정 영역-->
+                            <div class="contents">
+                                <div id="${id}-commentusername" class="username">
+                                    댓글 작성자 : ${username}
+                                </div>
+                                <div id="${id}-commentcontents" class="text">
+                                    ${contents}
+                                </div>
+                                <div id="${id}-commenteditarea" class="edit">
+                                    <textarea id="${id}-commenttextarea" class="te-edit" name="" id="" cols="30" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <!-- 버튼 영역-->
+                            <div class="btn">
+                                <img id="${id}-commentedit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editComment('${id}')">
+                                <img id="${id}-commentdelete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteComment('${id}')">
+                                <img id="${id}-commentsubmit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEditComment('${id}')">
+                            </div>
+                        </div>`;
+    $('#comments-box').append(tempHtml);
+}
+
+function editComment(id) {
+    showCommentEdits(id);
+    let contents = $(`#${id}-commentcontents`).text().trim();
+    $(`#${id}-commenttextarea`).val(contents);
+}
+
+function showCommentEdits(id) {
+    $(`#${id}-commenteditarea`).show();
+    $(`#${id}-commentsubmit`).show();
+    $(`#${id}-commentdelete`).show();
+
+    $(`#${id}-commentcontents`).hide();
+    $(`#${id}-commentedit`).hide();
+}
+
+function submitEditComment(id) {
+    let contents = $(`#${id}-commenttextarea`).val().trim();
+    let data = {'contents': contents};
+    console.log(contents);
+    $.ajax({
+        type: "PUT",
+        url: `/api/comments/${id}`,
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+            if (response === true) {
+                alert('댓글 수정에 성공하였습니다.');
+                window.location.reload();
+            }
+        }
+    });
+}
+
+function deleteComment(id) {
+    $.ajax({
+        type: "DELETE",
+        url: `/api/comments/${id}`,
+        success: function () {
+            alert("댓글 삭제에 성공하였습니다");
+            window.location.reload();
         }
     })
 }

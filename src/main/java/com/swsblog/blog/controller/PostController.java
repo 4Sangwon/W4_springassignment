@@ -5,8 +5,10 @@ import com.swsblog.blog.dto.PostDeleteRequestDto;
 import com.swsblog.blog.dto.PostRequestDto;
 import com.swsblog.blog.dto.PostUpdateRequestDto;
 import com.swsblog.blog.repository.PostRepository;
+import com.swsblog.blog.security.UserDetailsImpl;
 import com.swsblog.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -27,8 +29,9 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public Post createMemo(@RequestBody PostRequestDto requestDto) {
-        Post post = new Post(requestDto);
+    public Post createMemo(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl user) {
+        String username = user.getUsername();
+        Post post = new Post(username, requestDto);
         return postRepository.save(post);
     }
 

@@ -51,7 +51,7 @@
             success: function (response, textStatus, request) {
                 const jwtToken = request.getResponseHeader("Authorization");
                 if (jwtToken) {
-                    $.cookie("token", jwtToken);
+                    // $.cookie("token", jwtToken);
                     $.ajaxSetup({
                         headers:{
                             'Authorization': $.cookie('token', jwtToken, { path: '/' })

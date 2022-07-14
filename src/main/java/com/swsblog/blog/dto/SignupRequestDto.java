@@ -1,6 +1,8 @@
 package com.swsblog.blog.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
@@ -22,4 +24,11 @@ public class SignupRequestDto {
 
     private boolean admin = false;
     private String adminToken = "";
+
+
+    public static class test extends SignupRequestDto {
+        public test(String username, String password, String passwordChk, boolean b, String s) {
+            super();
+        }
+    }
 }

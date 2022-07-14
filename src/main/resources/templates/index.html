@@ -256,6 +256,10 @@
         #logout-text {
             color: black;
         }
+
+        #login-text{
+            color: black;
+        }
     </style>
 
 </head>
@@ -270,15 +274,13 @@
 <div class="wrap">
     <nav>
         <form id="my_form" method="post" style="text-align: right" action="/user/logout">
+            <a id="login-text" onclick="login()">로그인</a>
             <a id="logout-text" href="javascript:{}" onclick="document.getElementById('my_form').submit();">로그아웃</a>
         </form>
     </nav>
     <div class="header">
         <h2>Sangwon's Blog</h2>
-        <p>
-            공유하고 싶은 소식을 입력해주세요.
-            24시간이 지난 뒤에는 사라집니다.
-        </p>
+        <p>반가워요</p>
     </div>
 
     <div class="nav">
@@ -294,14 +296,9 @@
     </div>
     <div class="area-write" id="area-write" style="display: none">
         <input class="input" type="text" style="margin-bottom: 5px" placeholder="제목을 입력해주세요" name="title" id="title">
-        <input class="input" type="text" style="margin-bottom: 5px" placeholder="닉네임을 입력해주세요" name="username"
-               id="username">
         <input class="input" type="password" style="margin-bottom: 5px" placeholder="수정/삭제시 이용할 비밀번호를 입력해주세요"
                name="password" id="password">
         <textarea class="textarea" placeholder="게시글 내용을 입력해주세요" name="contents" id="contents" rows="10"></textarea>
-        <!--        <textarea class="field" placeholder="공유하고 싶은 소식을 입력해주세요" name="contents" id="contents" cols="30"-->
-        <!--                  rows="10"></textarea>-->
-        <!--            <button class="btn btn-danger" onclick="writePost()">작성하기</button>-->
         <img src="images/send.png" alt="" onclick="writePost()">
     </div>
     <div class="area-read">

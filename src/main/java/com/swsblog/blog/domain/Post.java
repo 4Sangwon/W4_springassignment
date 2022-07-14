@@ -29,9 +29,9 @@ public class Post extends Timestamped { // 생성,수정 시간을 자동으로 
     @Column(nullable = false)
     private String password;
 
-    public Post(PostRequestDto requestDto) {
+    public Post(String username, PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.username = requestDto.getUsername();
+        this.username = username;
         this.contents = requestDto.getContents();
         this.password = requestDto.getPassword();
     }
