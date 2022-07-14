@@ -14,27 +14,27 @@ $(document).ready(function () {
         $('#logout-text').hide();
     }
 
-    $.ajax({
-        type: "POST",
-        url: `/user/userinfo`,
-        contentType: "application/json",
-        success: function (response) {
-            const username = response.username;
-            const isAdmin = !!response.admin;
-            if (!username) {
-                window.location.href = '/user/loginView';
-            }
-
-            $('#username1').text(username);
-        },
-        error: function () {
-            window.location.href = '/user/loginView';
-        }
-    })
-
-    $('#close').on('click', function () {
-        $('#container').removeClass('active');
-    })
+    // $.ajax({
+    //     type: "POST",
+    //     url: `/user/userinfo`,
+    //     contentType: "application/json",
+    //     success: function (response) {
+    //         const username = response.username;
+    //         const isAdmin = !!response.admin;
+    //         if (!username) {
+    //             window.location.href = '/user/loginView';
+    //         }
+    //
+    //         $('#username1').text(username);
+    //     },
+    //     error: function () {
+    //         window.location.href = '/user/loginView';
+    //     }
+    // })
+    //
+    // $('#close').on('click', function () {
+    //     $('#container').removeClass('active');
+    // })
 
     getMessages();
     $('#posts-box').hide();
@@ -72,7 +72,7 @@ $(document).ready(function () {
     $('#area-write').hide();
 })
 
-function login(){
+function login() {
     window.location.href = '/user/loginView';
 }
 
@@ -138,6 +138,13 @@ function hideEdits(id) {
 
 // 게시글을 불러와서 보여줍니다.
 function getMessages() {
+    if ($.cookie('token')) {
+        $.ajaxSetup({
+            headers: {
+                'Authorization': $.cookie('token')
+            }
+        })
+    }
     // 1. 기존 게시글 내용을 지웁니다.
     $('#cards-box').empty();
     // 2. 게시글 목록을 불러와서 HTML로 붙입니다.
@@ -159,6 +166,7 @@ function getMessages() {
         }
     })
 }
+
 
 function addPost(id, title, username, contents, modifiedAt) {
     let date = modifiedAt.toString().substring(0, 10);
@@ -293,7 +301,7 @@ function deleteOne(id) {
 function writeComment(postId) {
     let contents = $(`#${postId}-comment`).val();
     let data = {'contents': contents};
-    if(contents === "") {
+    if (contents === "") {
         alert("내용을 작성해주세요");
         return;
     }
@@ -391,4 +399,5 @@ function deleteComment(id) {
             window.location.reload();
         }
     })
+
 }
